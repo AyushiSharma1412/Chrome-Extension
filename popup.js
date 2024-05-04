@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Listen for messages from the content script
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   // Check if the message action is "scrapedData"
-  if (message.action === "scrapedData") {
+  if (message.action === "scrapeProfile") {
       // Extract data from the message
       const { name, organization, university, description } = message.data;
 

@@ -1,15 +1,16 @@
 chrome.runtime.onMessage.addListener(async function(message, sender, sendResponse) {
-    if (message.action === "scrapedData") {
-      try {
-            const { name, location, description } = message.data;
-            
+    if (message.action === "scrapeProfile") {
+        try {
+            const { name, location, description, gmailname, email } = message.data;
+
             const contactData = {
-                first_name: name || "NA",
-                last_name: name || "NA",
-                email: "john.doe@example.com",
+                first_name: name || gmailname||  "NA",
+                last_name: name || gmailname|| "NA",
+                email: email || "john.doe@example.com", // Use the scraped email if available, otherwise use a default value
                 phone: "1234567890",
                 address: location || "N/A",
                 description: description || "N/A",
+                createdBy: 1
             };
 
             // Make a POST request to the CRM endpoint with the contact data using Fetch API
@@ -20,10 +21,10 @@ chrome.runtime.onMessage.addListener(async function(message, sender, sendRespons
                 },
                 body: JSON.stringify(contactData)
             });
-            
 
             if (!response.ok) {
-                throw new Error('Error creating contact:', response.statusText);
+                const errorResponse = await response.json();
+                throw new Error('Error creating contact: ' + JSON.stringify(errorResponse));
             }
 
             const responseData = await response.json();
